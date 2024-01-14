@@ -26,3 +26,25 @@ export const singleproduct = catchAsyncError(async (req, res, next) => {
     resp,
   });
 });
+
+export const singleproductSearch = catchAsyncError(async (req, res, next) => {
+  const { query } = req.params;
+  const resp = await Product.find({
+    $or: [
+      {
+        name: {
+          $regex: new RegExp(query, "i"),
+        },
+      },
+      {
+        description: {
+          $regex: new RegExp(query, "i"),
+        },
+      },
+    ],
+  });
+  res.status(200).json({
+    success: true,
+    resp,
+  });
+});

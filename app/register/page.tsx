@@ -41,13 +41,14 @@ const Register = () => {
       return toast.error(error);
     }
   };
+  console.log(user);
 
   if (user._id) {
     if (user.role === "nuser") {
-      return;
+      redirect("/");
     }
     if (user.role === "admin") {
-      return;
+      redirect("/");
     }
   }
 

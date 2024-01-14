@@ -1,0 +1,93 @@
+//page.tsx
+import Items from "@/app/Items";
+import type { Item } from "@/app/types";
+
+async function fetchItems(): Promise<Item[]> {
+  const response = await fetch(`${process.env.NEXT_PUBLIC_HOSTNAME}/api/items`);
+  const data = await response.json();
+  return data.items;
+}
+
+export default async function Home() {
+  const items = await fetchItems();
+
+  return <Items initialItems={items} />;
+}
+
+//type.ts
+export type Item = {
+  name: string;
+};
+
+//items.tsx
+"use client";
+
+import * as React from "react";
+import InfiniteScroll from "react-infinite-scroller";
+import type { Item } from "@/app/types";
+
+type ItemsProps = {
+  initialItems: Item[];
+};
+
+export default function Items({ initialItems }: ItemsProps) {
+  const fetching = React.useRef(false);
+  const [pages, setPages] = React.useState([initialItems]);
+  const items = pages.flatMap((page) => page);
+
+  const loadMore = async (page: number) => {
+    if (!fetching.current) {
+      try {
+        fetching.current = true;
+
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_HOSTNAME}/api/items?page=${page}`
+        );
+        const data = await response.json();
+
+        setPages((prev) => [...prev, data.items]);
+      } finally {
+        fetching.current = false;
+      }
+    }
+  };
+
+  return (
+    <InfiniteScroll
+      hasMore
+      pageStart={0}
+      loadMore={loadMore}
+      loader={
+        <span key={0} className="loader">
+          Loading ...
+        </span>
+      }
+      element="main"
+    >
+      {items.map((item) => (
+        <span key={item.name} className="item">
+          {item.name}
+        </span>
+      ))}
+    </InfiniteScroll>
+  );
+}
+
+//api
+import { NextResponse } from "next/server";
+
+export async function GET(request: Request) {
+  const { searchParams } = new URL(request.url);
+
+  const page = Number.parseInt(searchParams.get("page") || "0", 10);
+
+  return NextResponse.json({
+    items: Array.from({ length: 10 }).map((_, index) => ({
+      name: `Item #${page * 10 + index + 1}`,
+    })),
+  });
+}
+
+
+
+/////////////////////////////////////////////////////////

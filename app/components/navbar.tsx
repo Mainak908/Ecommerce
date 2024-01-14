@@ -1,26 +1,22 @@
+"use client";
 import { Searchcmp, Cartcont } from "@/app/clnt";
 import { Product } from "@/backend/src/models/prodModel";
+import { UserAccDocument } from "@/backend/src/models/userAccModel";
 import Link from "next/link";
 import React from "react";
 
-const Navbar = ({ products }: { products: Product[] }) => {
+const Navbar = ({ user }: { user: UserAccDocument }) => {
   return (
-    <header className="bg-gray-900 text-white p-4">
+    <header className="bg-white text-black p-4">
       <div className="container mx-auto flex justify-between items-center">
         <Link href="/userhome" className="text-3xl font-semibold">
           MyShop
         </Link>
-        <Searchcmp product={products} />
+        <Searchcmp />
         <nav>
           <ul className="flex space-x-4">
-            <li>
-              <Link href="/userhome">Home</Link>
-            </li>
-            <li>
-              <Link href="/userhome">Products</Link>
-            </li>
-            <li>
-              <Link href="/userhome">Contact</Link>
+            <li className=" text-black">
+              {user ? user.name : <h3 className=" text-black">login</h3>}
             </li>
             <li>
               <Cartcont />
