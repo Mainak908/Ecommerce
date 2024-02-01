@@ -9,15 +9,13 @@ import { RxCross1 } from "react-icons/rx";
 import { BiSearch } from "react-icons/bi";
 import { Product } from "@/backend/src/models/prodModel";
 import debounce from "lodash.debounce";
-
 import Navbar from "@/app/components/navbar";
-
-import { fetchUserData } from "./try";
-
 import { RootState } from "@/(redux)/store";
 import { UserAccDocument } from "@/backend/src/models/userAccModel";
-
 import { login } from "@/(redux)/authenticate";
+import toast, { Toaster } from "react-hot-toast";
+import dotenv from "dotenv";
+dotenv.config({ path: "@/.env" });
 
 export const CartBadge = ({ itemCount }: { itemCount: number }) => (
   <div className="relative group">
@@ -37,11 +35,16 @@ export const CartBadge = ({ itemCount }: { itemCount: number }) => (
 );
 
 export const Btncmp = ({ product }: { product: Product }) => {
+  const clickHandler = () => {
+    dispatch(add(product));
+    notify();
+  };
+  const notify = () => toast("Added to cart");
   const dispatch = useDispatch();
   return (
     <button
       className="bg-indigo-600 text-white py-2 px-4 mt-4 rounded"
-      onClick={() => dispatch(add(product))}
+      onClick={() => clickHandler()}
     >
       Add to Cart
     </button>
@@ -162,6 +165,30 @@ const FrontPage = () => {
   return (
     <div className="bg-white">
       <Navbar user={user} />
+    </div>
+  );
+};
+
+export const SlidingModal = () => {
+  const [isVisible, setIsVisible] = useState(true);
+
+  useEffect(() => {
+    setIsVisible(true);
+  }, []);
+
+  return (
+    <div
+      className={`fixed top-0 left-0 h-full w-full bg-black bg-opacity-50 transition-transform transform ${
+        isVisible ? "animate-slideRight" : "hidden"
+      }`}
+    >
+      <div className="fixed top-0 left-0 h-full w-full flex items-center justify-center">
+        <div className="bg-white p-8">
+          {/* Modal content goes here */}
+          <h2 className="text-2xl font-semibold mb-4">Modal Title</h2>
+          <p>Modal Content</p>
+        </div>
+      </div>
     </div>
   );
 };

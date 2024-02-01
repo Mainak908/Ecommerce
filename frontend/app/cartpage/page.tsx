@@ -3,9 +3,12 @@ import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { remove } from "../../(redux)/cartitem";
 import { RootState } from "@/(redux)/store";
+import Link from "next/link";
 
 const CartPage = () => {
   const cart = useSelector((state: RootState) => state.cart);
+  // console.log(cart);
+
   const dispatch = useDispatch();
 
   const calculateTotal = () => {
@@ -44,9 +47,12 @@ const CartPage = () => {
         <p className="text-xl font-semibold">
           Total: {calculateTotal().toFixed(2)}
         </p>
-        <button className="bg-indigo-600 text-white py-3 px-6 mt-4 rounded hover:bg-indigo-700">
+        <Link
+          href={"/paymentSelection"}
+          className="bg-indigo-600 text-white py-3 px-6 mt-4 rounded hover:bg-indigo-700"
+        >
           Proceed to Checkout
-        </button>
+        </Link>
       </div>
     </div>
   );

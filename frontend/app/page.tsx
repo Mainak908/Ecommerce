@@ -1,10 +1,14 @@
 import React from "react";
 import Link from "next/link";
-import FrontPage, { Btncmp } from "./clnt";
+import FrontPage, { Btncmp, SlidingModal } from "./clnt";
 import { Product } from "@/backend/src/models/prodModel";
 import { fetchUserData } from "./try";
 import FlipkartNavbar from "./components/typesModel";
 import FlipkartBanner from "./components/slidingBannar";
+import { Carousel } from "./components/slidingCor";
+import { Suspense } from "react";
+import Loading from "./loading";
+import { Toaster } from "react-hot-toast";
 
 const ProductCard = ({ product }: { product: Product }) => {
   return (
@@ -23,6 +27,7 @@ const ProductCard = ({ product }: { product: Product }) => {
   );
 };
 const Serverc = async () => {
+  const carouselItems = ["Item 1", "Item 2", "Item 3"];
   const data = await fetchUserData<Product>(
     "http://localhost:3001/api/v1/fetch-product",
     "GET"
@@ -42,6 +47,11 @@ const Serverc = async () => {
             ))}
           </div>
         </main>
+
+        <Suspense fallback={<Loading />}>
+          <Carousel products={products} />
+        </Suspense>
+        <Toaster />
       </div>
     </div>
   );
